@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books CRUD Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #6f4c3e;
+            color: white;
+        }
+        .book-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    My Favorite Books
+</header>
+
+<div>
+    <h2>Available Books</h2>
+    <div id="bookItems"></div>
+</div>
+
+<div>
+    <h2>Add Book</h2>
+    <input type="text" placeholder="Book Title" class="title">
+    <input type="text" placeholder="Author" class="author">
+    <input type="number" step="0.01" placeholder="Price" class="price">
+    <button onclick="createBook()">Add Book</button>
+</div>
+
+<div>
+    <h2>Update Book</h2>
+    <input type="text" placeholder="Book Title to Update" class="updateTitle">
+    <input type="text" placeholder="New Title" class="newTitle">
+    <input type="text" placeholder="New Author" class="newAuthor">
+    <input type="number" step="0.01" placeholder="New Price" class="newPrice">
+    <button onclick="updateBook()">Update Book</button>
+</div>
+
+<script>
+    // Define an array of objects
+    let books = [
+        { title: "1984", author: "George Orwell", price: 9.99 },
+        { title: "The Great Gatsby", author: "F. Scott Fitzgerald", price: 10.99 },
+        { title: "To Kill a Mockingbird", author: "Harper Lee", price: 7.99 }
+    ];
+
+    // Display books using forEach
+    function displayBooks() {
+        const bookItemsDiv = document.querySelector('#bookItems');
+        bookItemsDiv.innerHTML = ''; // Clear existing items
+        books.forEach((book) => {
+            const bookDiv = document.createElement('div');
+            bookDiv.className = 'book-item';
+            bookDiv.innerHTML = `
+                <strong>${book.title}</strong> by ${book.author} - $${book.price.toFixed(2)}
+                <button onclick="deleteBook('${book.title}')">Delete</button>
+                <button onclick="readBook('${book.title}')">View Details</button>
+            `;
+            bookItemsDiv.appendChild(bookDiv);
+        });
+    }
+
+    // Create: Add a new book
+    function createBook() {
+        const title = document.querySelector('.title').value;
+        const author = document.querySelector('.author').value;
+        const price = parseFloat(document.querySelector('.price').value);
+
+        if (title && author && !isNaN(price)) {
+            books.push({ title, author, price }); // Use push
+            displayBooks();
+            clearInputs();
+        } else {
+            alert("Please fill in all fields.");
+        }
+    }
+
+    // Read: Display details of a specific book
+    function readBook(title) {
+        const book = books.find(b => b.title === title); // Use find
+        if (book) {
+            alert(`Details of "${book.title}": Author: ${book.author}, Price: $${book.price.toFixed(2)}`);
+        } else {
+            alert("Book not found.");
+        }
+    }
+
+    // Update: Change a book's details
+    function updateBook() {
+        const titleToUpdate = document.querySelector('.updateTitle').value;
+        const newTitle = document.querySelector('.newTitle').value;
+        const newAuthor = document.querySelector('.newAuthor').value;
+        const newPrice = parseFloat(document.querySelector('.newPrice').value);
+
+        const book = books.find(b => b.title === titleToUpdate); // Use find
+        if (book) {
+            if (newTitle) book.title = newTitle;
+            if (newAuthor) book.author = newAuthor;
+            if (!isNaN(newPrice)) book.price = newPrice;
+
+            displayBooks();
+            alert("Book updated successfully!");
+        } else {
+            alert("Book not found.");
+        }
+    }
+
+    // Delete: Remove a book
+    function deleteBook(title) {
+        const index = books.findIndex(b => b.title === title); // Find index of the book
+        if (index !== -1) {
+            books.splice(index, 1); // Use splice
+            displayBooks();
+            alert("Book deleted successfully!");
+        } else {
+            alert("Book not found.");
+        }
+    }
+
+    // Clear input fields
+    function clearInputs() {
+        const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
+        inputs.forEach(input => input.value = '');
+    }
+
+    displayBooks();
+</script>
+
+</body>
+</html>
+
